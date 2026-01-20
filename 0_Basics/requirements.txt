@@ -45,3 +45,5 @@ nest_asyncio
 pydantic-ai[logfire]
 datasets
 phidata
+fpdf
+langserve
