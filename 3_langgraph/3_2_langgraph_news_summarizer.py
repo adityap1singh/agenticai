@@ -77,6 +77,7 @@ workflow.add_node("analyze_sentiment", analyze_sentiment)
 workflow.add_node("investor_summary", investor_summary)
 workflow.add_node("public_summary", public_summary)
 
+# graph.add_edge(START, fetch_news)    
 workflow.set_entry_point("fetch_news")
 workflow.add_edge("fetch_news", "summarize_news")
 workflow.add_edge("summarize_news", "analyze_sentiment")
@@ -90,6 +91,15 @@ workflow.add_edge("investor_summary", END)
 workflow.add_edge("public_summary", END)
 
 app = workflow.compile()
+
+# --------------------------
+# Draw and save the graph image
+# --------------------------
+print("Generating graph image...")
+graph = app.get_graph()
+graph_path = "c://code//agenticai//3_langgraph//news_agent_graph.png"
+graph.draw_mermaid_png(output_file_path=graph_path)
+print(f"Graph image saved at: {graph_path}")
 
 # --------------------------
 # Run in a loop for multiple topics
