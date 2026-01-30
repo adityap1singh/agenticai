@@ -19,7 +19,7 @@ stability_image_config = json.dumps({
 
 response = client.invoke_model(
     body=stability_image_config, 
-    modelId="amazon.titan-image-generator-v1", 
+    modelId="amazon.titan-image-generator-v2:0", 
     accept="application/json", 
     contentType="application/json")
 
@@ -31,3 +31,5 @@ base_64_image = base64.b64decode(base64_image)
 file_path = r"c:\code\agenticai\8_bedrock\bedrock_image_8_7.png"
 with open(file_path, "wb") as f:
     f.write(base_64_image)
+
+print(f"Image saved to {file_path}")

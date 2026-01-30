@@ -1,4 +1,4 @@
-from langchain_aws import BedrockLLM as Bedrock
+from langchain_aws import ChatBedrock
 from langchain_aws import BedrockEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import FAISS
@@ -13,24 +13,19 @@ my_data = [
 
 question = "Which Indian state celebrates Pongal?"
 
-
 AWS_REGION = "us-west-2"
 
 bedrock = boto3.client(service_name="bedrock-runtime", region_name=AWS_REGION)
 
-model = Bedrock(model_id="amazon.titan-text-express-v1", client=bedrock)
+model = ChatBedrock(model_id="us.amazon.nova-lite-v1:0", client=bedrock)
 
 bedrock_embeddings = BedrockEmbeddings(
-    model_id="amazon.titan-embed-text-v1", client=bedrock
+    model_id="amazon.titan-embed-text-v2:0", client=bedrock
 )
 
-# create vector store
 vector_store = FAISS.from_texts(my_data, bedrock_embeddings)
 
-# create retriever
-retriever = vector_store.as_retriever(
-    search_kwargs={"k": 2}
-)
+retriever = vector_store.as_retriever(search_kwargs={"k": 2})
 
 results = retriever.invoke(question)
 
@@ -38,7 +33,6 @@ results_string = []
 for result in results:
     results_string.append(result.page_content)
 
-# build template:
 template = ChatPromptTemplate.from_messages(
     [
         (
@@ -49,15 +43,7 @@ template = ChatPromptTemplate.from_messages(
     ]
 )
 
-chain = template.pipe(model)
+chain = template | model
 
 response = chain.invoke({"input": question, "context": results_string})
-print(response)
-
-
-
-
-
-
-
-
+print(response.content)
